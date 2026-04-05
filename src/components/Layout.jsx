@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import Navbar from './Navbar'
 import LoginModal from './LoginModal'
 import RegisterModal from './RegisterModal'
+import ProfileModal from './ProfileModal'
 import { useModal } from '../context/ModalContext'
 
 export default function Layout() {
@@ -15,6 +16,7 @@ export default function Layout() {
       </main>
       {activeModal === 'login' && <LoginModal />}
       {activeModal === 'register' && <RegisterModal />}
+      {activeModal === 'profile' && <ProfileModal />}
     </div>
   )
 }
