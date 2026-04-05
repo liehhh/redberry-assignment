@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useModal } from '../context/ModalContext'
@@ -19,6 +19,7 @@ export default function Dashboard() {
 /* ─── Hero Banner ─── */
 function HeroBanner() {
   const [current, setCurrent] = useState(0)
+  const timerRef = useRef(null)
 
   const slides = [
     {
@@ -28,7 +29,7 @@ function HeroBanner() {
     },
     {
       title: 'Pick up where you left off',
-      subtitle: 'Continue your learning journey and complete courses you\'ve already started. Synapse with AI, grow with us.',
+      subtitle: 'Continue your learning journey and complete courses you\'ve already started. Keep building your skills, one lesson at a time.',
       gradient: 'from-orange-500 via-red-500 to-yellow-500',
     },
     {
@@ -38,34 +39,65 @@ function HeroBanner() {
     },
   ]
 
-  const prev = () => setCurrent((c) => (c === 0 ? slides.length - 1 : c - 1))
-  const next = () => setCurrent((c) => (c === slides.length - 1 ? 0 : c + 1))
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => {
+      setCurrent((c) => (c === slides.length - 1 ? 0 : c + 1))
+    }, 5000)
+  }, [slides.length])
+
+  useEffect(() => {
+    resetTimer()
+    return () => clearInterval(timerRef.current)
+  }, [resetTimer])
+
+  const prev = () => {
+    setCurrent((c) => (c === 0 ? slides.length - 1 : c - 1))
+    resetTimer()
+  }
+
+  const next = () => {
+    setCurrent((c) => (c === slides.length - 1 ? 0 : c + 1))
+    resetTimer()
+  }
+
+  const goTo = (i) => {
+    setCurrent(i)
+    resetTimer()
+  }
 
   return (
     <div className="relative mx-8 lg:mx-16 mt-6 rounded-2xl overflow-hidden">
-      <div
-        className={`relative bg-gradient-to-r ${slides[current].gradient} px-10 py-14 md:py-20 transition-all duration-500`}
-      >
-        <div className="max-w-xl relative z-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-3">
-            {slides[current].title}
-          </h1>
-          <p className="text-white/80 text-sm md:text-base mb-6 leading-relaxed">
-            {slides[current].subtitle}
-          </p>
-          <Link
-            to="/courses"
-            className="inline-block px-6 py-2.5 bg-white text-primary font-medium text-sm rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            Browse Courses
-          </Link>
+      <div className="relative">
+        <div
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${current * 100}%)` }}
+        >
+          {slides.map((slide, i) => (
+            <div
+              key={i}
+              className={`w-full flex-shrink-0 relative bg-gradient-to-r ${slide.gradient} px-10 py-14 md:py-20`}
+            >
+              <div className="max-w-xl relative z-10">
+                <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-3">
+                  {slide.title}
+                </h1>
+                <p className="text-white/80 text-sm md:text-base mb-6 leading-relaxed">
+                  {slide.subtitle}
+                </p>
+                <Link
+                  to="/courses"
+                  className="inline-block px-6 py-2.5 bg-white text-primary font-medium text-sm rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  Browse Courses
+                </Link>
+              </div>
+              <div className="absolute inset-0 bg-black/10" />
+            </div>
+          ))}
         </div>
-
-        {/* Decorative overlay */}
-        <div className="absolute inset-0 bg-black/10" />
       </div>
 
-      {/* Navigation arrows */}
       <button
         onClick={prev}
         className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-md transition-colors z-10"
@@ -83,14 +115,13 @@ function HeroBanner() {
         </svg>
       </button>
 
-      {/* Dots */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {slides.map((_, i) => (
           <button
             key={i}
-            onClick={() => setCurrent(i)}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              i === current ? 'bg-white' : 'bg-white/50'
+            onClick={() => goTo(i)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              i === current ? 'bg-white w-6' : 'bg-white/50'
             }`}
           />
         ))}

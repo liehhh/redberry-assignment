@@ -94,12 +94,15 @@ export default function ProfileModal() {
 
     setLoading(true)
     try {
-      const payload = {
-        full_name: form.full_name.trim(),
-        mobile_number: form.mobile_number.replace(/\s/g, ''),
-        age: Number(form.age),
+      const formData = new FormData()
+      formData.append('_method', 'PUT')
+      formData.append('full_name', form.full_name.trim())
+      formData.append('mobile_number', form.mobile_number.replace(/\s/g, ''))
+      formData.append('age', Number(form.age))
+      if (avatar) {
+        formData.append('avatar', avatar)
       }
-      await updateProfile(payload)
+      await updateProfile(formData)
       await refreshUser()
       setSuccess(true)
       setTimeout(() => closeModal(), 1000)

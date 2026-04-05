@@ -37,7 +37,9 @@ export const logout = () => api.post('/logout')
 export const getMe = () => api.get('/me')
 
 // Profile
-export const updateProfile = (data) => api.put('/profile', data)
+export const updateProfile = (data) => api.post('/profile', data, {
+  headers: { 'Content-Type': 'multipart/form-data' },
+})
 
 // Courses
 export const getCourses = (params) => api.get('/courses', { params })
