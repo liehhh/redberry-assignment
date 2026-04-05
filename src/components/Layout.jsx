@@ -3,6 +3,7 @@ import Navbar from './Navbar'
 import LoginModal from './LoginModal'
 import RegisterModal from './RegisterModal'
 import ProfileModal from './ProfileModal'
+import EnrolledSidebar from './EnrolledSidebar'
 import { useModal } from '../context/ModalContext'
 
 export default function Layout() {
@@ -17,6 +18,7 @@ export default function Layout() {
       {activeModal === 'login' && <LoginModal />}
       {activeModal === 'register' && <RegisterModal />}
       {activeModal === 'profile' && <ProfileModal />}
+      <EnrolledSidebar />
     </div>
   )
 }

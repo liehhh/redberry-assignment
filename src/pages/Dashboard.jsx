@@ -102,7 +102,7 @@ function HeroBanner() {
 /* ─── Continue Learning (Courses in Progress) ─── */
 function ContinueLearning() {
   const { isAuthenticated, loading: authLoading } = useAuth()
-  const { openLogin } = useModal()
+  const { openLogin, openSidebar } = useModal()
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -123,7 +123,7 @@ function ContinueLearning() {
           <p className="text-sm text-gray-500">Pick up where you left off</p>
         </div>
         {isAuthenticated && courses.length > 0 && (
-          <button className="text-sm font-medium text-primary hover:underline">
+          <button onClick={openSidebar} className="text-sm font-medium text-primary hover:underline">
             See All
           </button>
         )}

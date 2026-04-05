@@ -4,11 +4,15 @@ const ModalContext = createContext(null)
 
 export function ModalProvider({ children }) {
   const [activeModal, setActiveModal] = useState(null)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const openLogin = () => setActiveModal('login')
   const openRegister = () => setActiveModal('register')
   const openProfile = () => setActiveModal('profile')
   const closeModal = () => setActiveModal(null)
+
+  const openSidebar = () => setSidebarOpen(true)
+  const closeSidebar = () => setSidebarOpen(false)
 
   return (
     <ModalContext.Provider value={{
@@ -17,6 +21,9 @@ export function ModalProvider({ children }) {
       openRegister,
       openProfile,
       closeModal,
+      sidebarOpen,
+      openSidebar,
+      closeSidebar,
     }}>
       {children}
     </ModalContext.Provider>

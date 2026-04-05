@@ -4,8 +4,8 @@ import { useAuth } from '../context/AuthContext'
 import { useModal } from '../context/ModalContext'
 
 export default function Navbar() {
-  const { isAuthenticated, user, logout } = useAuth()
-  const { openLogin, openRegister, openProfile } = useModal()
+  const { isAuthenticated, isProfileComplete, user, logout } = useAuth()
+  const { openLogin, openRegister, openProfile, openSidebar } = useModal()
   const location = useLocation()
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef(null)
@@ -25,11 +25,18 @@ export default function Navbar() {
     await logout()
   }
 
+  const handleEnrolledClick = () => {
+    if (!isAuthenticated) {
+      openLogin()
+      return
+    }
+    openSidebar()
+  }
+
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-[1920px] mx-auto px-8 lg:px-16">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -40,9 +47,7 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Right side */}
           <div className="flex items-center gap-6">
-            {/* Browse Courses - always visible */}
             <Link
               to="/courses"
               className={`flex items-center gap-2 text-sm font-medium transition-colors ${
@@ -60,10 +65,9 @@ export default function Navbar() {
 
             {isAuthenticated ? (
               <>
-                {/* Enrolled Courses button */}
                 <button
                   className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                  onClick={() => {/* TODO: open enrolled sidebar */}}
+                  onClick={handleEnrolledClick}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -73,7 +77,6 @@ export default function Navbar() {
                   Enrolled Courses
                 </button>
 
-                {/* Profile dropdown */}
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setShowDropdown(!showDropdown)}
@@ -87,32 +90,41 @@ export default function Navbar() {
                         <circle cx="12" cy="7" r="4" />
                       </svg>
                     )}
+                    {!isProfileComplete && (
+                      <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-orange-400 border-2 border-white rounded-full" />
+                    )}
                   </button>
 
                   {showDropdown && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                      <div className="px-4 py-2 border-b border-gray-100">
+                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                      <div className="px-4 py-2.5 border-b border-gray-100">
                         <p className="text-sm font-medium text-gray-900 truncate">{user?.username}</p>
                         <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                        {!isProfileComplete && (
+                          <p className="text-[10px] text-orange-500 font-medium mt-0.5">Profile incomplete</p>
+                        )}
                       </div>
                       <button
                         onClick={() => {
                           setShowDropdown(false)
                           openProfile()
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2.5"
                       >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                           <circle cx="12" cy="7" r="4" />
                         </svg>
                         Profile
+                        {!isProfileComplete && (
+                          <span className="ml-auto w-2 h-2 bg-orange-400 rounded-full" />
+                        )}
                       </button>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2.5"
                       >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                           <polyline points="16 17 21 12 16 7" />
                           <line x1="21" y1="12" x2="9" y2="12" />
