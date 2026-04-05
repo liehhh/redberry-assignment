@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import Navbar from './Navbar'
+import Footer from './Footer'
 import LoginModal from './LoginModal'
 import RegisterModal from './RegisterModal'
 import ProfileModal from './ProfileModal'
@@ -20,11 +21,12 @@ export default function Layout() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F5F5F5] flex flex-col">
       <Navbar />
-      <main>
+      <main className="flex-1">
         <Outlet />
       </main>
+      <Footer />
       {activeModal === 'login' && <LoginModal />}
       {activeModal === 'register' && <RegisterModal />}
       {activeModal === 'profile' && <ProfileModal />}

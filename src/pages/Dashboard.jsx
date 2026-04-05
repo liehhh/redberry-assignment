@@ -25,17 +25,17 @@ function HeroBanner() {
     {
       title: 'Start learning something new today',
       subtitle: 'Explore a wide range of expert-led courses in tech, design, and business. Find the skills you need to grow your career and learn at your own pace.',
-      gradient: 'from-purple-600 via-pink-500 to-orange-400',
+      image: '/svg/carousel-1.png',
     },
     {
       title: 'Pick up where you left off',
       subtitle: 'Continue your learning journey and complete courses you\'ve already started. Keep building your skills, one lesson at a time.',
-      gradient: 'from-orange-500 via-red-500 to-yellow-500',
+      image: '/svg/carousel-2.png',
     },
     {
       title: 'Learn together, grow faster',
       subtitle: 'Join thousands of learners worldwide. Collaborate, share, and accelerate your growth with our community.',
-      gradient: 'from-teal-400 via-emerald-500 to-blue-400',
+      image: '/svg/carousel-3.png',
     },
   ]
 
@@ -76,7 +76,8 @@ function HeroBanner() {
           {slides.map((slide, i) => (
             <div
               key={i}
-              className={`w-full flex-shrink-0 relative bg-gradient-to-r ${slide.gradient} px-10 py-14 md:py-20`}
+              className="w-full flex-shrink-0 relative bg-cover bg-center px-10 py-14 md:py-20"
+              style={{ backgroundImage: `url(${slide.image})` }}
             >
               <div className="max-w-xl relative z-10">
                 <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-3">
@@ -87,12 +88,12 @@ function HeroBanner() {
                 </p>
                 <Link
                   to="/courses"
-                  className="inline-block px-6 py-2.5 bg-white text-primary font-medium text-sm rounded-lg hover:bg-gray-100 transition-colors"
+                  className="inline-block px-6 py-2.5 bg-primary text-white font-medium text-sm rounded-lg hover:bg-primary-hover transition-colors"
                 >
                   Browse Courses
                 </Link>
               </div>
-              <div className="absolute inset-0 bg-black/10" />
+              <div className="absolute inset-0 bg-black/30" />
             </div>
           ))}
         </div>
